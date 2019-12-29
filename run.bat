@@ -7,4 +7,8 @@ echo "   _| |_| ||  __/ | | | | | |__| | (_| | || (_| | | (_) | (_) | \__ \   "
 echo "  |_____|\__\___|_| |_| |_|_____/ \__,_|\__\__,_|_|\___/ \___/|_|___/   "
 echo "                                                                        "
 echo "                                                                        "
-java -jar target\GrowtopiaItemDataTools-1.0.jar true
+
+if not exist "loaded" mkdir loaded
+for /f %%A in ('dir loaded ^| find "File(s)"') do set cnt=%%A
+
+If %cnt% == 0 (java -jar target\GrowtopiaItemDataTools-1.0.jar true) else (java -jar target\GrowtopiaItemDataTools-1.0.jar false)

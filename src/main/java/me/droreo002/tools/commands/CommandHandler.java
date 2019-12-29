@@ -2,6 +2,7 @@ package me.droreo002.tools.commands;
 
 import lombok.Getter;
 import me.droreo002.tools.ItemDataDecoder;
+import me.droreo002.tools.commands.model.BuildDescriptionCommand;
 import me.droreo002.tools.commands.model.HelpCommand;
 import me.droreo002.tools.commands.model.ItemDataCommand;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,7 @@ public class CommandHandler {
          */
         register(new HelpCommand());
         register(new ItemDataCommand(program));
+        register(new BuildDescriptionCommand(program));
     }
 
     /**

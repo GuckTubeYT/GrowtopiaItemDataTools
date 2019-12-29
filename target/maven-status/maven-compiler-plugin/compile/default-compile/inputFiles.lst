@@ -5,11 +5,13 @@ H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\log\MainLogger.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\utils\Utilities.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\commands\CommandHandler.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\utils\Process.java
-H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\model\ItemData.java
+H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\model\CustomValue.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\log\LogDispatcher.java
+H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\utils\ScrappingProgress.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\log\ColouredWriter.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\model\GrowtopiaItem.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\model\ProgramConfig.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\commands\CommandExecutor.java
+H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\commands\model\BuildDescriptionCommand.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\ItemDataDecoder.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\log\ConciseFormatter.java

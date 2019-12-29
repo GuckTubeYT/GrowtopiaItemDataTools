@@ -7,7 +7,8 @@ import jline.console.ConsoleReader;
 import lombok.Getter;
 import me.droreo002.tools.commands.CommandHandler;
 import me.droreo002.tools.log.MainLogger;
-import me.droreo002.tools.model.ItemData;
+import me.droreo002.tools.model.CustomValue;
+import me.droreo002.tools.model.GrowtopiaItem;
 import me.droreo002.tools.model.ProgramConfig;
 import me.droreo002.tools.utils.Process;
 import me.droreo002.tools.utils.Utilities;
@@ -25,7 +26,6 @@ import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -37,7 +37,7 @@ public class ItemDataDecoder {
 
     private static final boolean ENABLE_DEBUG = false;
     private static final String APP_DATA = System.getenv("APPDATA").replace("\\Roaming", "\\Local");
-    private static final String DATA_FOLDER = "loaded";
+    public static final String DATA_FOLDER = "loaded";
 
     @Getter
     private static ItemDataDecoder instance;
@@ -54,7 +54,7 @@ public class ItemDataDecoder {
     }
 
     @Getter
-    private final List<ItemData> loadedData = new ArrayList<>();
+    private final List<GrowtopiaItem> growtopiaItems = new ArrayList<>();
     @Getter
     private int itemCount = 0;
     @Getter
@@ -103,7 +103,8 @@ public class ItemDataDecoder {
         log(ansi().a("Config has been loaded!").fg(GREEN).a(" (config.json)"));
         log("Getting items.dat on " + APP_DATA);
         File itemData = new File(APP_DATA + "\\Growtopia\\cache\\items.dat");
-        File loadedItems = new File(DATA_FOLDER);
+        File loadedItemsFolder = new File(DATA_FOLDER);
+        if (!loadedItemsFolder.exists()) loadedItemsFolder.mkdir();
 
         byte[] all = Files.readAllBytes(Paths.get(itemData.toURI()));
 
@@ -125,13 +126,16 @@ public class ItemDataDecoder {
             log("Starting item.dat reading..");
             outer: for (int i = 0; i < itemCount; i++) {
                 loadingCount = i;
-                ItemData actualData = new ItemData();
+                GrowtopiaItem actualData = new GrowtopiaItem();
                 Field[] fields = actualData.getClass().getDeclaredFields();
                 for (Field dataField : fields) {
                     if (dataField.getName().equals("itemID")) debug("-------------------- Checking on count: " + i);
                     if (!dataField.isAccessible()) dataField.setAccessible(true);
                     Class<?> type = dataField.getType();
                     try {
+                        if (dataField.isAnnotationPresent(CustomValue.class)) {
+                            continue;
+                        }
                         if (int.class.isAssignableFrom(type)) {
                             int integerData = buffer.getInt();
                             dataField.set(actualData, integerData);
@@ -183,32 +187,47 @@ public class ItemDataDecoder {
                             dataField.set(actualData, readData);
                             debug(dataField.getName() + " [" + type.getName() + "] : " + readData);
                         }
+
+                        if (boolean.class.isAssignableFrom(type)) {
+                            boolean readData = false;
+                            if (dataField.getName().equals("rayman")) {
+                                readData = (buffer.getShort()) > 0;
+                            }
+                            if (dataField.getName().equals("stripyWallpaper")) {
+                                readData = (buffer.get() & 0xff) > 0;
+                            }
+                            dataField.set(actualData, readData);
+                            debug(dataField.getName() + " [" + type.getName() + "] : " + readData);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         break outer;
                     }
                 }
-                loadedData.add(actualData);
+                growtopiaItems.add(actualData);
             }
 
-            log("Saving loaded items.. This might take a while!");
-            for (ItemData data : loadedData) {
-                FileWriter writer = new FileWriter(new File(loadedItems, data.getItemID() + ".json"));
-                gson.toJson(data, writer);
-                writer.flush();
-                writer.close();
-            }
+            saveData(loadedItemsFolder);
         } else {
             log(ansi().a("Loading items data from folder ").fg(GREEN).a("\"loaded\""));
-            File[] listFile = loadedItems.listFiles();
+            File[] listFile = loadedItemsFolder.listFiles();
             if (listFile == null || listFile.length < itemCount) {
                 log(ansi().fg(RED).a("Cache is invalid!. Please reload data!"));
                 pause();
                 return;
             }
+            for (File f : listFile) {
+                FileReader reader = new FileReader(f);
+                GrowtopiaItem data = gson.fromJson(reader, GrowtopiaItem.class);
+                if (data == null) {
+                    throw new NullPointerException("Null data found!" + f.getName());
+                }
+                growtopiaItems.add(data);
+                reader.close();
+            }
         }
 
-        log(ansi().a("Successfully loaded " + loadedData.size() + " items! Took (").fg(GREEN).a(process.stop("%totalTimems")).reset().a(")! For help type \"help\""));
+        log(ansi().a("Successfully loaded " + growtopiaItems.size() + " GrowtopiaItem(s)! Took (").fg(GREEN).a(process.stop("%totalTimems")).reset().a(")! For help type \"help\""));
 
         // Input
         String line;
@@ -224,6 +243,16 @@ public class ItemDataDecoder {
         pause();
     }
 
+    public void saveData(File folder) throws IOException {
+        log("Saving loaded items.. This might take a while!");
+        for (GrowtopiaItem data : growtopiaItems) {
+            FileWriter writer = new FileWriter(new File(folder, data.getItemID() + ".json"));
+            gson.toJson(data, writer);
+            writer.flush();
+            writer.close();
+        }
+    }
+
     private void pause() {
         log("Huh?, program ended. Press enter to continue");
         new Scanner(System.in).nextLine();
@@ -231,14 +260,17 @@ public class ItemDataDecoder {
     }
 
     /**
-     * Get ItemData by ID
+     * Get GrowtopiaItem by ID
      *
      * @param id The item id
      * @return the item data if there's any
      */
     @Nullable
-    public ItemData getItemData(int id) {
-        return loadedData.stream().filter(item -> item.getItemID() == id).findAny().orElse(null);
+    public GrowtopiaItem getItemData(int id) {
+        for (GrowtopiaItem data : growtopiaItems) {
+            if (data.getItemID() == id) return data;
+        }
+        return null;
     }
 
     /**
@@ -248,8 +280,8 @@ public class ItemDataDecoder {
      * @return the item data if there's any
      */
     @Nullable
-    public ItemData getItemData(String name) {
-        return loadedData.stream().filter(item -> item.getItemName().toLowerCase().equals(name.toLowerCase())).findAny().orElse(null);
+    public GrowtopiaItem getItemData(String name) {
+        return growtopiaItems.stream().filter(item -> item.getItemName().toLowerCase().equals(name.toLowerCase())).findAny().orElse(null);
     }
 
     /*
