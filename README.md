@@ -2,3 +2,6 @@
 
 # GrowtopiaItemDataTools
 Item data tools for Growtopia game. Made with Java
+
+# Compiling
+This project is using maven, you can compile directly by running `mvn clean install`
