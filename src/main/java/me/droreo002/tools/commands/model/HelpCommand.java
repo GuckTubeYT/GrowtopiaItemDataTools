@@ -9,7 +9,7 @@ public class HelpCommand implements CommandExecutor {
     public void execute(MainLogger logger, String[] args) {
         logger.info("Command list: ");
         logger.info("   > /item <id|name> [propertyKey] | Get item information by ID or Name");
-        logger.info("   > /build-description <start_id> <stop_id> | Get item description via Wiki use -1 for default");
+        logger.info("   > /build-description [start_id] [stop_id] | Get item description via Growtopia Wiki");
         logger.info("");
         logger.info("To run, type the command without / (<> Required, [] Optional)");
     }

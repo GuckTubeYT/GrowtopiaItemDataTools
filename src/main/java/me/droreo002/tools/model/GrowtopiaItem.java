@@ -53,7 +53,7 @@ public class GrowtopiaItem {
     private String punchOptions = "";
 
     @CustomValue
-    private String itemDescription;
+    private String itemDescription = "";
 
     public GrowtopiaItem() {}
 

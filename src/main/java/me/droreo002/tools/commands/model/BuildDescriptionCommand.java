@@ -3,11 +3,9 @@ package me.droreo002.tools.commands.model;
 import me.droreo002.tools.ItemDataDecoder;
 import me.droreo002.tools.commands.CommandExecutor;
 import me.droreo002.tools.log.MainLogger;
-import me.droreo002.tools.utils.ScrappingProgress;
+import me.droreo002.tools.scrapper.ItemScrapper;
+import me.droreo002.tools.scrapper.model.ItemDescriptionScrapper;
 import org.fusesource.jansi.Ansi;
-
-import java.io.File;
-import java.io.IOException;
 
 public class BuildDescriptionCommand implements CommandExecutor {
 
@@ -19,41 +17,23 @@ public class BuildDescriptionCommand implements CommandExecutor {
 
     @Override
     public void execute(MainLogger logger, String[] args) {
-        if (args.length < 2) {
-            logger.info("Invalid argument!");
-            return;
-        }
-        int startId = Integer.parseInt(args[0]);
-        int stopId = Integer.parseInt(args[1]);
-
-        if (startId == -1 && stopId != -1) {
-            logger.info("Both must be negative to start by default!");
-            return;
-        }
-        if (stopId == -1 && startId != -1) {
-            logger.info("Both must be negative to start by default!");
-            return;
-        }
-        if (startId > stopId) {
-            logger.info("StartID cannot be greater than stopID!");
-            return;
-        }
-
-        logger.info(Ansi.ansi().a("ID [" + startId + " <-> " + stopId + "] Now opening progress UI ").fg(Ansi.Color.GREEN).a("[Program will close after completion or when cancelled]").reset().toString());
-        ScrappingProgress.start(program, startId, stopId, () -> {
-            try {
-                program.saveData(new File(ItemDataDecoder.DATA_FOLDER));
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (args.length == 2) {
+            int startId = Integer.parseInt(args[0]);
+            int stopId = Integer.parseInt(args[1]);
+            if (startId == -1 || stopId == -1) {
+                logger.info("StartID or StopID cannot be negative!");
+                return;
             }
-            logger.info("Data has been saved!");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.exit(0);
-        });
+            logger.info(Ansi.ansi().a("ID [" + startId + " -> " + stopId + "] Now opening progress UI").toString());
+            start(startId, stopId);
+        } else {
+            logger.info(Ansi.ansi().a("[Scrapping All] Now opening progress UI").toString());
+            start(-1, -1);
+        }
+    }
+
+    private void start(int startId, int stopId) {
+        ItemScrapper.start(new ItemDescriptionScrapper(program, startId, stopId));
     }
 
     @Override
