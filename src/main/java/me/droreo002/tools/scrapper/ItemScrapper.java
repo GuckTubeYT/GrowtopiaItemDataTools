@@ -221,7 +221,7 @@ public abstract class ItemScrapper extends JPanel implements ActionListener {
             if (failedItem.isEmpty()) {
                 taskOutput.append("Done!\n");
             } else {
-                taskOutput.append("Scrapping is now finished!. But we failed on these items! " + taskOutput.toString());
+                taskOutput.append("Scrapping is now finished!. But we failed on these items! " + failedItem.toString());
             }
             try {
                 Thread.sleep(1000);

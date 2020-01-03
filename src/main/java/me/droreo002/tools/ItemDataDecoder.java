@@ -26,6 +26,8 @@ import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,7 +56,7 @@ public class ItemDataDecoder {
     }
 
     @Getter
-    private final List<GrowtopiaItem> growtopiaItems = new ArrayList<>();
+    private final LinkedList<GrowtopiaItem> growtopiaItems = new LinkedList<>();
     @Getter
     private int itemCount = 0;
     @Getter
@@ -225,6 +227,8 @@ public class ItemDataDecoder {
                 growtopiaItems.add(data);
                 reader.close();
             }
+            // Sort
+            growtopiaItems.sort(Comparator.comparingInt(GrowtopiaItem::getItemID));
         }
 
         log(ansi().a("Successfully loaded " + growtopiaItems.size() + " GrowtopiaItem(s)! Took (").fg(GREEN).a(process.stop("%totalTimems")).reset().a(")! For help type \"help\""));

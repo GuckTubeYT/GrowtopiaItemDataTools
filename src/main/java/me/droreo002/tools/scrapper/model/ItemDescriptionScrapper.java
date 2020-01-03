@@ -1,6 +1,7 @@
 package me.droreo002.tools.scrapper.model;
 
 import me.droreo002.tools.ItemDataDecoder;
+import me.droreo002.tools.log.MainLogger;
 import me.droreo002.tools.model.GrowtopiaItem;
 import me.droreo002.tools.scrapper.ItemScrapper;
 import org.jsoup.Connection;
@@ -8,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class ItemDescriptionScrapper extends ItemScrapper {
@@ -23,7 +25,18 @@ public class ItemDescriptionScrapper extends ItemScrapper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        getLogger().info("Data has been saved!");
+        getLogger().info("Data has been saved!. Now building to plain data");
+        try {
+            FileWriter writer = new FileWriter(new File("plain-data/Description.txt"));
+            for (GrowtopiaItem growtopiaItem : getProgram().getGrowtopiaItems()) {
+                writer.write(growtopiaItem.getItemID() + "|" + growtopiaItem.getItemDescription() + "\n");
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        getLogger().info("Success!");
     }
 
     @Override
