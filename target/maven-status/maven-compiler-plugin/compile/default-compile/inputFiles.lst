@@ -8,6 +8,7 @@ H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\utils\Process.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\scrapper\ItemScrapper.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\model\CustomValue.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\log\LogDispatcher.java
+H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\commands\model\BuildNameCommand.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\scrapper\model\ItemDescriptionScrapper.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\log\ColouredWriter.java
 H:\GrowtopiaItemDataTools\src\main\java\me\droreo002\tools\model\GrowtopiaItem.java

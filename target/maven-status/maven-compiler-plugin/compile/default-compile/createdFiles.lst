@@ -10,6 +10,7 @@ me\droreo002\tools\utils\Utilities.class
 me\droreo002\tools\commands\CommandHandler.class
 me\droreo002\tools\log\LogDispatcher.class
 me\droreo002\tools\commands\model\BuildDescriptionCommand.class
+me\droreo002\tools\commands\model\BuildNameCommand.class
 me\droreo002\tools\commands\model\ItemDataCommand.class
 me\droreo002\tools\commands\CommandExecutor.class
 me\droreo002\tools\scrapper\model\ItemDescriptionScrapper.class
